@@ -32,3 +32,13 @@ Les parties Cours, TD et QCM ne font plus partie de ce site : il est dédié au 
 
 ## Mettre à jour le site
 Modifie les fichiers dans le dépôt : tes données ne sont pas touchées. Pour forcer la mise à jour du cache hors-ligne, change `V` dans sw.js (déjà fait pour cette version).
+
+## v5 — fiabilité
+- Les mêmes fichiers servent pour LIFE-PROJECT et TEST-LIFEPROJECT : si l'adresse contient « test », mode TEST (bandeau rouge, clé `test:majorpromo_v3`, base IndexedDB `test:majorpromo`).
+- Import : validation du fichier, aperçu entrées actuelles → après import, sauvegarde automatique téléchargée avant. Export : date, version et environnement inclus.
+- Dates en heure locale. Alerte visible si l'enregistrement échoue. Cache hors-ligne propre à ce site (ne supprime plus ceux des autres).
+
+## v6 — refonte visuelle et dashboard
+- Navigation hiérarchisée : barre latérale sur ordinateur, barre du bas + menu sur téléphone, rubrique active en surbrillance, retour au tableau de bord, raccourcis vers les rubriques les plus utilisées, menu « Mon écosystème » avec statuts.
+- Dashboard : accueil, date, période du parcours, frise 2026-2036, échéances, actions prioritaires, indicateurs indépendants (pas de score unique), graphiques (notes, recherche, sommeil), résumés stages / finance / compétences, état de Routine et de Multi-DA (lecture seule).
+- Identité « Scientific Editorial » : vert forêt, corail, doré, fond clair cassé, titres Fraunces, motif végétal discret, mode sombre (automatique / clair / sombre).
