@@ -42,3 +42,11 @@ Modifie les fichiers dans le dépôt : tes données ne sont pas touchées. Pour 
 - Navigation hiérarchisée : barre latérale sur ordinateur, barre du bas + menu sur téléphone, rubrique active en surbrillance, retour au tableau de bord, raccourcis vers les rubriques les plus utilisées, menu « Mon écosystème » avec statuts.
 - Dashboard : accueil, date, période du parcours, frise 2026-2036, échéances, actions prioritaires, indicateurs indépendants (pas de score unique), graphiques (notes, recherche, sommeil), résumés stages / finance / compétences, état de Routine et de Multi-DA (lecture seule).
 - Identité « Scientific Editorial » : vert forêt, corail, doré, fond clair cassé, titres Fraunces, motif végétal discret, mode sombre (automatique / clair / sombre).
+
+## v8 — complété
+- Mêmes fichiers pour LIFE-PROJECT et TEST-LIFEPROJECT (mode TEST automatique). Deux DA ajoutées : « Sable & Corail » et « Encre & Or » (Données > Thème, ou menu).
+- Notes & rang : lit les notes de Multi-DA (source de saisie), ECTS séparés des coefficients, moyennes par UE / semestre / année, types d'épreuve, classement, évaluations à venir, UE à consolider.
+- Stages : synthèse des 10 compétences cliniques depuis Multi-DA et envoi en preuve vers le dossier passerelle. Champs stages, recherche, publications, formations, projets et réseau enrichis.
+- Passerelle : synthèse automatique, éligibilité, calendrier officiel, checklist d'oral, questions/réponses, recommandations, lettre de motivation, projet médical.
+- Finance : liquidités, épargne, investissements et patrimoine séparés ; transferts non comptés comme revenus ; soldes d'ouverture, fonds de sécurité, objectifs, budget mensuel, projection, graphiques.
+- Plan 2026-2036 détaillé, trajectoires, onglet Jalons. Compétences 0-5 avec preuve, date, prochaine étape, historique. Portfolio : CV exportable en PDF. Bilan du dimanche pré-rempli depuis les trois applis. Données : historique des exports.
