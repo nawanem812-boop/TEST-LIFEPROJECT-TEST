@@ -54,3 +54,6 @@ Modifie les fichiers dans le dépôt : tes données ne sont pas touchées. Pour 
 ## v9
 - Finance : nouveaux types « Transfert épargne → courant » et « Transfert investissement → courant » (inverses des transferts vers l'épargne). Ils déplacent l'argent entre comptes sans être un revenu. Avertissement si le retrait dépasse le solde du compte ; le taux d'épargne tient compte des retraits.
 - Toutes les rubriques : avertissement avant d'ajouter une ligne strictement identique à une ligne existante. Finance : montant obligatoire (> 0).
+
+## v10
+- Stages synchronisés avec Multi-DA (même navigateur) : lieu/service, dates, objectifs et bilan dans les deux sens ; création et suppression aussi. Journal et questions viennent de Multi-DA (lecture seule ici).

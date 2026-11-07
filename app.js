@@ -7,13 +7,45 @@ function html(){return A.map(function(a){var s=a[0]==me?{k:'cur',l:'ici'}:st(a[0
 window.__ecoT=touch;if(!window['__eco_'+me]){window['__eco_'+me]=1;touch();window.addEventListener('pagehide',touch);document.addEventListener('visibilitychange',function(){if(document.hidden)touch()})}
 return{A:A,st:st,html:html,TEST:TEST,touch:touch}}
 
+function _sbase(l){return String(l||'').split(' — ')[0]}
+function _skey(s){return (_sbase(s.etablissement!==undefined?s.etablissement:s.lieu)+'|'+(s.dateDebut||s.debut||'')).toLowerCase().replace(/\s+/g,' ').trim()}
+function _toC(s,isA){return isA?{lieu:(s.etablissement||'')+(s.service?' — '+s.service:''),debut:s.dateDebut||'',fin:s.dateFin||s.dateDebut||'',obj:s.objectifs||'',bilan:s.bilan||''}:{lieu:s.lieu||'',debut:s.debut||'',fin:s.fin||s.debut||'',obj:s.obj||'',bilan:s.bilan||''}}
+function _setA(s,c){const p=String(c.lieu).split(' — ');s.etablissement=p[0]||'';s.service=p.slice(1).join(' — ');s.dateDebut=c.debut;s.dateFin=c.fin||c.debut;s.objectifs=c.obj;s.bilan=c.bilan}
+function _setB(s,c){s.lieu=c.lieu;s.debut=c.debut;s.fin=c.fin;s.obj=c.obj;s.bilan=c.bilan}
+function _jtxt(s){return (s.journal||[]).slice().sort(function(x,y){return(x.date||'').localeCompare(y.date||'')}).map(function(j){return(j.date||'')+' · '+(j.type||'')+' : '+(j.texte||'')}).join('\n')}
+function _qtxt(s){return (s.questions||[]).filter(function(q){return!q.done}).map(function(q){return'• '+q.texte}).join('\n')}
+/* A = stages de Multi-DA, B = stages de LIFE-PROJECT, R = registre {sid:{h,d}} */
+function stageMerge(A,B,R){var ca=false,cb=false;
+A.forEach(function(s){if(!s.sid){s.sid=s.id;ca=true}});
+B.forEach(function(s){if(!s.sid){var k=_skey(s),m=A.filter(function(a){return _skey(a)===k&&!B.some(function(b){return b.sid===a.sid})})[0];s.sid=m?m.sid:'L'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);cb=true}});
+var ia={},ib={};A.forEach(function(s){ia[s.sid]=s});B.forEach(function(s){ib[s.sid]=s});
+Object.keys(R).forEach(function(sid){var r=R[sid];if(r.d)return;var a=ia[sid],b=ib[sid];
+ if(a&&!b){A.splice(A.indexOf(a),1);delete ia[sid];r.d=1;ca=true}else if(b&&!a){B.splice(B.indexOf(b),1);delete ib[sid];r.d=1;cb=true}else if(!a&&!b){r.d=1}});
+A.slice().forEach(function(a){if(!ib[a.sid]&&!(R[a.sid]&&R[a.sid].d)){var b={sid:a.sid};_setB(b,_toC(a,1));B.unshift(b);ib[a.sid]=b;cb=true}});
+B.slice().forEach(function(b){if(!ia[b.sid]&&!(R[b.sid]&&R[b.sid].d)){var a={id:b.sid,sid:b.sid,horaires:'',journal:[],questions:[],coursLies:[]};_setA(a,_toC(b,0));A.unshift(a);ia[b.sid]=a;ca=true}});
+A.forEach(function(a){var b=ib[a.sid];if(!b)return;var r=R[a.sid]=R[a.sid]||{h:null,d:0},ca0=_toC(a,1),cb0=_toC(b,0),ha=JSON.stringify(ca0),hb=JSON.stringify(cb0),c=null;
+ if(r.h===null){c={};Object.keys(ca0).forEach(function(k){c[k]=ca0[k]||cb0[k]||''})}
+ else if(hb===r.h&&ha!==r.h)c=ca0;else if(ha===r.h&&hb!==r.h)c=cb0;else if(ha!==r.h&&hb!==r.h)c=ca0;
+ if(c){var before=ha;_setA(a,c);if(JSON.stringify(_toC(a,1))!==before)ca=true}
+ var fin=_toC(a,1);if(JSON.stringify(_toC(b,0))!==JSON.stringify(fin)){_setB(b,fin);cb=true}
+ r.h=JSON.stringify(_toC(a,1));
+ var jt=_jtxt(a),qt=_qtxt(a);
+ if(b.journal&&b.journal!==b._ja&&b.journal!==jt&&!b._jm){b.actes=(b.actes?b.actes+'\n':'')+'[Notes avant synchro] '+b.journal;b._jm=1;cb=true}
+ if(b.question&&b.question!==b._qa&&b.question!==qt&&!b._qm){b.actes=(b.actes?b.actes+'\n':'')+'[Questions avant synchro] '+b.question;b._qm=1;cb=true}
+ if(b.journal!==jt||b.question!==qt||b._ja!==jt||b._qa!==qt){b.journal=jt;b._ja=jt;b.question=qt;b._qa=qt;cb=true}});
+return{ca:ca,cb:cb}}
+
+function stageSyncRun(){try{var raw=localStorage.getItem(PF+'stages'),A=raw?JSON.parse(raw):[];if(!Array.isArray(A))A=[];if(!Array.isArray(D.stages))D.stages=[];var R=JSON.parse(localStorage.getItem(PF+'sync:stages')||'{}'),res=stageMerge(A,D.stages,R);
+if(res.ca||raw===null&&A.length)localStorage.setItem(PF+'stages',JSON.stringify(A));localStorage.setItem(PF+'sync:stages',JSON.stringify(R));return res.cb}catch(e){console.error('sync stages',e)}}
+document.addEventListener('visibilitychange',function(){if(!document.hidden){try{var r=localStorage.getItem(KEY);if(r){D=JSON.parse(r)}}catch(e){}stageSyncRun();render()}});
+
 function applyTheme(){try{const t=localStorage.getItem('life-theme')||'auto';if(t=='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t)}catch(e){}}applyTheme();
 const $=s=>document.querySelector(s);
-const TEST=/test/i.test(location.pathname),PF=TEST?'test:':'',VER='v9',KEY=PF+'majorpromo_v3';var saveErr=false;let D={};try{D=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
+const TEST=/test/i.test(location.pathname),PF=TEST?'test:':'',VER='v10',KEY=PF+'majorpromo_v3';var saveErr=false;let D={};try{D=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
 function idbOpen(cb){try{const r=indexedDB.open(PF+'majorpromo',1);r.onupgradeneeded=()=>r.result.createObjectStore('s');r.onsuccess=()=>cb(r.result);r.onerror=()=>cb(null)}catch(e){cb(null)}}
 function idbSet(v){idbOpen(db=>{if(!db)return;try{db.transaction('s','readwrite').objectStore('s').put(v,'D')}catch(e){}})}
 function idbGet(cb){idbOpen(db=>{if(!db)return cb();try{const g=db.transaction('s').objectStore('s').get('D');g.onsuccess=()=>cb(g.result);g.onerror=()=>cb()}catch(e){cb()}})}
-const save=()=>{D._saved=Date.now();const s=JSON.stringify(D);try{localStorage.setItem(KEY,s);saveErr=false;if(window.__ecoT)window.__ecoT()}catch(e){saveErr=true}idbSet(s)};
+const save=()=>{stageSyncRun();D._saved=Date.now();const s=JSON.stringify(D);try{localStorage.setItem(KEY,s);saveErr=false;if(window.__ecoT)window.__ecoT()}catch(e){saveErr=true}idbSet(s)};
 const ld=x=>x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');
 const td=()=>ld(new Date());
 const add=(d,n)=>{const x=new Date(d+'T12:00:00');x.setDate(x.getDate()+n);return ld(x)};
@@ -173,7 +205,7 @@ if(false){const s=stats();const c=s.solde>=0?'var(--g)':'var(--r)';return `<div 
 if(k=='passerelle')return passX();
 if(k=='notes')return notesX();
 if(k=='sante')return chart()+santeX()+`<p class="m">Sommeil + sport + récupération = variables de performance, pas des récompenses.</p>`;
-if(k=='stages')return clinX()+`<p class="m">Avant : anatomie, physio, pathologies, pharmaco, gestes. Pendant : patient → problème → hypothèses → prise en charge → résultat → question scientifique.</p>`;
+if(k=='stages')return `<div class="card"><p class="m">🔄 Synchronisé avec Multi-DA${TEST?' TEST':''} : lieu, dates, objectifs et bilan se modifient des deux côtés ; le journal et les questions viennent de Multi-DA (modifie-les là-bas).</p></div>`+clinX()+`<p class="m">Avant : anatomie, physio, pathologies, pharmaco, gestes. Pendant : patient → problème → hypothèses → prise en charge → résultat → question scientifique.</p>`;
 if(k=='recherche')return rechX()+`<p class="m">1 article/semaine suffit en L1. Grille : Question → Méthode → Résultat → Implications → Retenu → Évolution.</p>`;
 if(k=='publications')return `<p class="m">Chaque fiche de recherche solide peut devenir un poster ou une communication. Vise au moins une trace écrite par stage/projet marquant (poster de stage, résumé de mémoire, communication en journée scientifique).</p>`;
 return ''}
@@ -317,6 +349,7 @@ ${sec('🎓 Formations',forma)}
 </div>`}
 
 function render(){nav();document.title=(TEST?'[TEST] ':'')+'LIFE-PROJECT — '+LBL(tab);let h='';if(tab=='home')h=home();else if(tab=='comp')h=comp();else if(tab=='plan')h=plan();else if(tab=='portfolio')h=portfolio();else if(tab=='data'){h=data();setTimeout(pinfo,0)}else h=`<h2>${LBL(tab)}</h2>${extra(tab)}${form(tab)}${searchbox(tab)}<div id="list_${tab}">${list(tab)}</div>`;$('#main').innerHTML=h}
+stageSyncRun();
 render();
 
 /* ---- Sauvegarde & rappels ---- */

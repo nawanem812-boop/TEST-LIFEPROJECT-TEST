@@ -1,4 +1,4 @@
-const P=/test/i.test(self.registration.scope)?'test-life-project':'life-project',V=P+'-v9',A=['./','index.html','style.css','app.js','manifest.json','icon.svg'];
+const P=/test/i.test(self.registration.scope)?'test-life-project':'life-project',V=P+'-v10',A=['./','index.html','style.css','app.js','manifest.json','icon.svg'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(A)));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!=V&&x.startsWith(P+'-v')).map(x=>caches.delete(x)))));self.clients.claim()});
 self.addEventListener('fetch',e=>{if(e.request.method!='GET')return;e.respondWith(fetch(e.request).then(r=>{const c=r.clone();caches.open(V).then(x=>x.put(e.request,c));return r}).catch(()=>caches.match(e.request)))});
