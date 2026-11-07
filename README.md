@@ -50,3 +50,7 @@ Modifie les fichiers dans le dépôt : tes données ne sont pas touchées. Pour 
 - Passerelle : synthèse automatique, éligibilité, calendrier officiel, checklist d'oral, questions/réponses, recommandations, lettre de motivation, projet médical.
 - Finance : liquidités, épargne, investissements et patrimoine séparés ; transferts non comptés comme revenus ; soldes d'ouverture, fonds de sécurité, objectifs, budget mensuel, projection, graphiques.
 - Plan 2026-2036 détaillé, trajectoires, onglet Jalons. Compétences 0-5 avec preuve, date, prochaine étape, historique. Portfolio : CV exportable en PDF. Bilan du dimanche pré-rempli depuis les trois applis. Données : historique des exports.
+
+## v9
+- Finance : nouveaux types « Transfert épargne → courant » et « Transfert investissement → courant » (inverses des transferts vers l'épargne). Ils déplacent l'argent entre comptes sans être un revenu. Avertissement si le retrait dépasse le solde du compte ; le taux d'épargne tient compte des retraits.
+- Toutes les rubriques : avertissement avant d'ajouter une ligne strictement identique à une ligne existante. Finance : montant obligatoire (> 0).
